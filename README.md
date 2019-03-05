@@ -56,7 +56,7 @@ class UserController
 }
 ```
 
-### routes.phpでRoutesを定義する
+## routes.phpでRoutesを定義する
 
 ```php
 <?php
