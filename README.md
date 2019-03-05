@@ -6,6 +6,11 @@ dependency injector for slim3
 `dependency.php` を以下のように設定する
 
 ```php
+<?php
+use Akrfjmt\SlimBeauty\CustomCallableResolver;
+use Akrfjmt\SlimBeauty\ParameterResolver;
+use Akrfjmt\SlimBeauty\RequestResponseAutoParams;
+
 $c = $app->getContainer();
 
 // parameter resolver
@@ -26,11 +31,13 @@ $c['callableResolver'] = function() use ($c) {
 
 ## Controllerに依存コンポーネントを注入する
 
-型または引数名でControllerの引数を注入できる。  
-他のコンポーネントに依存している場合、再帰的にコンポーネントをnewする。  
-見えない場所で新しく作成されたインスタンスはクラス名をキーにしてコンテナに格納される。  
+型または引数名でコンテナからインスタンスを取り出してControllerの引数に注入される。  
+コンテナにインスタンスが存在しない場合、コンポーネントをnewする。  
+このとき、コンストラクタの型または引数名で再帰的に依存コンポーネントが注入される。  
+新しく作成されたインスタンスはクラス名をキーにしてコンテナに格納される。  
 
 ```php
+<?php
 class UserController
 {
     /** @var CustomPhpRenderer */
@@ -49,7 +56,12 @@ class UserController
 }
 ```
 
-### Callable
+### routes.phpでRoutesを定義する
 
-`[UserController::class, 'showUser']` のような形式でCallableを書ける。  
+```php
+<?php
+$app->get('/@{name}', [UserController::class, 'showUser'])->setName('show_user');
+```
+
+`[UserController::class, 'showUser']` のような形式でroutes定義を書ける。  
 この形式はIntelliJで定義元に飛べるという利点がある。
